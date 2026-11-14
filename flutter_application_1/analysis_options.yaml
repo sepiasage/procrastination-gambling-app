@@ -2,4 +2,9 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   enable-experiment:
     - primary-constructors
+  exclude:
+    - build/**
+    - android/**
+    - web/**
+    - windows/**
 
