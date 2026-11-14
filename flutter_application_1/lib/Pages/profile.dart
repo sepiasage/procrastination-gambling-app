@@ -7,15 +7,17 @@ class Profilepage extends StatefulWidget {
   State<Profilepage> createState() => _ProfilepageState();
 }
 
-Widget build(BuildContext context) {
-  return MaterialApp(
-    title: appTitle,
+class _ProfilepageState extends State<Profilepage> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Profiles Page',
     home: Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            child: Row(
+            Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Column(
@@ -24,9 +26,12 @@ Widget build(BuildContext context) {
                     Text('Join Date'),
                     Text('Grade 12'),
                   ],
-                  Icon(Icons.square_rounded,
-                  color: const Color(0xff9a00ff), size: 120),
-                ),
+                  ),
+                  
+                    Icon(Icons.square_rounded,
+                    color: const Color(0xff9a00ff), size: 120),
+                  
+                
               ],
             ),
               Row(
@@ -40,4 +45,5 @@ Widget build(BuildContext context) {
       ),
     ),
   );
+}
 }
