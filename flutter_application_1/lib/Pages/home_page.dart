@@ -75,20 +75,59 @@ class _HomepageState extends State<Homepage> {
               ),
               const SizedBox(height: 16),
               // 7. Displays your added tasks on screen
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _tasks.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(_tasks[index]),
-                    );
-                  },
+              SizedBox(
+                width: 300,
+                height: 150,
+                child: Card(
+                  clipBehavior: .hardEdge,
+                  child: ListView.builder(
+                    itemCount: _tasks.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(_tasks[index]),
+                        //trailing: ItemMenu(title: _tasks[index])
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class ItemMenu extends StatelessWidget {
+  final String title;
+  const ItemMenu({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.more_vert),
+      onPressed: () => showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: Text(title),
+          content: const Text('Here you can edit your item.'), // Change Item, it's not the right word
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'Edit'),
+              child: const Text('Edit')
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'Completed'),
+              child: const Text('Completed')
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'Exit'),
+              child: const Text('Exit')
+            ),
+          ]
+        )
+      )
     );
   }
 }
