@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'profile.dart'; // Adjust if it's directly in lib/ as import 'profile.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -106,60 +107,59 @@ class _HomepageState extends State<Homepage> {
               ),
               const SizedBox(height: 20),
               Row(
-                children:[
-              Expanded(
-                flex: 3,
-                child: Container(
-                    height: 45,
-                    padding: const EdgeInsets.symmetric(horizontal: 0.1),
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
-                    child: Stack(
-                      children: [
-                        //animation for the progress bar
-                        TweenAnimationBuilder<double>(
-                          tween: Tween<double>(begin: 0, end: 1.0),
-                          duration: const Duration(seconds: 5),
-                          builder: (context, value, child) {
-                            return FractionallySizedBox(
-                              alignment: Alignment.centerLeft,
-                              widthFactor: value,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.greenAccent,
-                                  borderRadius: BorderRadius.circular(30),
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Container(
+                      height: 45,
+                      padding: const EdgeInsets.symmetric(horizontal: 0.1),
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: Stack(
+                          children: [
+                            //animation for the progress bar
+                            TweenAnimationBuilder<double>(
+                              tween: Tween<double>(begin: 0, end: 1.0),
+                              duration: const Duration(seconds: 5),
+                              builder: (context, value, child) {
+                                return FractionallySizedBox(
+                                  alignment: Alignment.centerLeft,
+                                  widthFactor: value,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.greenAccent,
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            //percent text
+                            const Center(
+                              child: Text(
+                                '100%',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            );
-                          },
-                        ),
-                        //percent text
-                        const Center(
-                          child: Text(
-                            '100%',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
                             ),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-            
             ],
           ),
-          ],
-          ),
         ),
-        
+
         bottomNavigationBar: BottomAppBar(
           child: Container(
             height: 50,
@@ -213,6 +213,32 @@ class _HomepageState extends State<Homepage> {
                     setState(() {
                       _currentIndex = 3;
                     });
+                    // Navigate to the ProfilePage
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const Profilepage(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset.zero;
+                              const curve = Curves.easeInOut;
+
+                              final tween = Tween(
+                                begin: begin,
+                                end: end,
+                              ).chain(CurveTween(curve: curve));
+                              final offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                        transitionDuration: const Duration(milliseconds: 300),
+                      ),
+                    );
                   },
                 ),
               ],
