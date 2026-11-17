@@ -141,17 +141,23 @@ class ItemMenu extends StatefulWidget {
 
 class _ItemMenuState extends State<ItemMenu> {
   late final TextEditingController _controller;
+  late final String oldTask;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.task);
+    oldTask = _controller.text;
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void setOldTask() {
+    _controller.text = oldTask;
   }
 
   @override
@@ -176,6 +182,7 @@ class _ItemMenuState extends State<ItemMenu> {
           actions: <Widget>[
             TextButton(
               onPressed: () => {
+                setOldTask(),
                 Navigator.pop(context, 'Cancel')
               },
               child: const Text('Cancel')
