@@ -107,9 +107,9 @@ class _HomepageState extends State<Homepage> {
                       return ListTile(
                         title: Text(_tasks[index]),
                         trailing: ItemMenu(
-                          onSubmit: _isConfirmOrDelete,
-                          index: index,
-                          task: _tasks[index],
+                          onSubmit: _isConfirmOrDelete, // Tells if the button is confirm or delete because they affect the actual homepage.
+                          index: index, // Index of the item
+                          task: _tasks[index], // Item at that index
                         )
                       );
                     },
@@ -141,22 +141,22 @@ class ItemMenu extends StatefulWidget {
 
 class _ItemMenuState extends State<ItemMenu> {
   late final TextEditingController _controller;
-  late final String oldTask;
+  late final String oldTask; // This remembers the task that it was when the popup opened, without any edits
 
   @override
-  void initState() {
+  void initState() { // Initializes the controller and oldTask variables
     super.initState();
     _controller = TextEditingController(text: widget.task);
     oldTask = _controller.text;
   }
 
   @override
-  void dispose() {
+  void dispose() { // Clears the controller after it's done
     _controller.dispose();
     super.dispose();
   }
 
-  void setOldTask() {
+  void setOldTask() { // Sets the controller value, and therefore the popup text, to the oldTask string for cancel button
     _controller.text = oldTask;
   }
 
@@ -166,9 +166,9 @@ class _ItemMenuState extends State<ItemMenu> {
       icon: const Icon(Icons.more_vert), // 3 dots icon
       onPressed: () => showDialog<String>(
         context: context,
-        builder: (BuildContext context) => AlertDialog( // To change the task to a new one
+        builder: (BuildContext context) => AlertDialog( // Popup to change the task to a new one
           title: const Text('Task Editor'),
-          content: Column(
+          content: Column( // Body text
             children: [
               Text('Change task below. Cancel restores original task. Confirm changes to what is written below.'),
               TextFormField(
@@ -179,7 +179,7 @@ class _ItemMenuState extends State<ItemMenu> {
               ),
             ],
           ),
-          actions: <Widget>[
+          actions: <Widget>[ // Buttons at the bottom
             TextButton(
               onPressed: () => {
                 setOldTask(),
