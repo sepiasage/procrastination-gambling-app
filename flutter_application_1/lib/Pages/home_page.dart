@@ -32,6 +32,29 @@ class _HomepageState extends State<Homepage> {
     });
   }
 
+  void _isConfirmOrDelete(int index, String newText, bool isConfirm) {
+    if(isConfirm) {
+      _updateTask(index, newText);
+    } else {
+      _deleteThisTask(index);
+    }
+  }
+
+  // Deletes the task for the popup screen.
+  void _deleteThisTask(int index) {
+    setState(() {
+      _tasks.removeAt(index);
+    });
+  }
+
+  // Updates the text in the task on the home screen based on what you changed it to in the alert dialog popup.
+  void _updateTask(int index, String newText) {
+    setState(() {
+      _tasks[index] = newText;
+    });
+    _taskController.clear(); // Clear the text box after adding
+  }
+
   @override
   void dispose() {
     _taskController.dispose();
@@ -56,7 +79,7 @@ class _HomepageState extends State<Homepage> {
                     child: TextField(
                       controller: _taskController, // Connected controller here
                       decoration: const InputDecoration(
-                        hintText: 'Enter a task', // Changed from 'Search'
+                        hintText: 'Enter task', // Changed from 'Search'
                       ),
                     ),
                   ),
@@ -76,16 +99,18 @@ class _HomepageState extends State<Homepage> {
               const SizedBox(height: 16),
               // 7. Displays your added tasks on screen
               SizedBox(
-                width: 300,
                 height: 150,
                 child: Card(
-                  clipBehavior: .hardEdge,
                   child: ListView.builder(
                     itemCount: _tasks.length,
                     itemBuilder: (context, index) {
                       return ListTile(
                         title: Text(_tasks[index]),
-                        //trailing: ItemMenu(title: _tasks[index])
+                        trailing: ItemMenu(
+                          onSubmit: _isConfirmOrDelete,
+                          index: index,
+                          task: _tasks[index],
+                        )
                       );
                     },
                   ),
@@ -99,31 +124,75 @@ class _HomepageState extends State<Homepage> {
   }
 }
 
-class ItemMenu extends StatelessWidget {
-  final String title;
-  const ItemMenu({super.key, required this.title});
+class ItemMenu extends StatefulWidget {
+  final Function(int, String, bool) onSubmit;
+  final int index;
+  final String task;
+
+  const ItemMenu({super.key,
+  required this.onSubmit,
+  required this.task,
+  required this.index
+  });
+
+   @override
+  State<ItemMenu> createState() => _ItemMenuState();
+}
+
+class _ItemMenuState extends State<ItemMenu> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.task);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.more_vert),
+      icon: const Icon(Icons.more_vert), // 3 dots icon
       onPressed: () => showDialog<String>(
         context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: Text(title),
-          content: const Text('Here you can edit your item.'), // Change Item, it's not the right word
+        builder: (BuildContext context) => AlertDialog( // To change the task to a new one
+          title: const Text('Task Editor'),
+          content: Column(
+            children: [
+              Text('Change task below. Cancel restores original task. Confirm changes to what is written below.'),
+              TextFormField(
+                controller: _controller, // Connected controller here
+                decoration: const InputDecoration(
+                  helperText: 'Enter task',
+                ),
+              ),
+            ],
+          ),
           actions: <Widget>[
             TextButton(
-              onPressed: () => Navigator.pop(context, 'Edit'),
-              child: const Text('Edit')
+              onPressed: () => {
+                Navigator.pop(context, 'Cancel')
+              },
+              child: const Text('Cancel')
             ),
             TextButton(
-              onPressed: () => Navigator.pop(context, 'Completed'),
-              child: const Text('Completed')
+              onPressed: () => {
+                widget.onSubmit(widget.index, _controller.text, true),
+                Navigator.pop(context, 'Confirm'),
+              },
+              child: const Text('Confirm')
             ),
             TextButton(
-              onPressed: () => Navigator.pop(context, 'Exit'),
-              child: const Text('Exit')
+              onPressed: () => {
+                widget.onSubmit(widget.index, "", false), //delete it, FIX IT
+                Navigator.pop(context, 'Delete'),
+              },
+              child: const Text('Delete')
             ),
           ]
         )
