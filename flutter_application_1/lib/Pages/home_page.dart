@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'profile.dart'; // Adjust if it's directly in lib/ as import 'profile.dart';
+import 'calendar.dart';
+import 'package:flutter_application_1/Pages/chatbot.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -16,25 +18,144 @@ class _HomepageState extends State<Homepage> {
   final List<String> _tasks = [];
 
   // 3. Function for the "Add Task" button
-  void _addTask() {
-    final text = _taskController.text.trim();
-    if (text.isEmpty) return; // Don't add empty tasks
 
-    setState(() {
-      _tasks.add(text);
-    });
-    _taskController.clear(); // Clear the text box after adding
+  void _showAddTaskModal(BuildContext context) {
+    final TextEditingController taskNameController = TextEditingController();
+    final TextEditingController dueDateController = TextEditingController();
+    final TextEditingController notesController = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return Container(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+            left: 20,
+            right: 20,
+            top: 20,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'Add Task',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: taskNameController,
+                decoration: InputDecoration(
+                  hintText: 'Input Task Name',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              TextField(
+                controller: dueDateController,
+                decoration: InputDecoration(
+                  hintText: 'Due Date',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              TextField(
+                controller: notesController,
+                decoration: InputDecoration(
+                  hintText: 'Notes (Optional)...',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                ),
+                onPressed: () {
+                  if (taskNameController.text.isNotEmpty) {
+                    setState(() {
+                      _tasks.add(
+                        taskNameController.text,
+                      ); // Adds it to your list!
+                    });
+                    Navigator.pop(context); // Closes the modal
+                  }
+                },
+                child: const Text(
+                  'Submit',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showEditTaskDialog(BuildContext context, int index) {
+    final TextEditingController editController = TextEditingController(
+      text: _tasks[index],
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Edit Task'),
+          content: TextField(
+            controller: editController,
+            decoration: const InputDecoration(hintText: 'Update task name'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _tasks[index] =
+                      editController.text; // Updates the task in the list
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   // 4. Function for the "Delete" button (removes the last added task)
-  void _deleteLastTask() {
-    if (_tasks.isEmpty) return;
-
-    setState(() {
-      _tasks.removeLast();
-    });
-  }
-
   @override
   void dispose() {
     _taskController.dispose();
@@ -69,7 +190,7 @@ class _HomepageState extends State<Homepage> {
                         child: Text(
                           'Good evening, User Name!',
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -97,6 +218,7 @@ class _HomepageState extends State<Homepage> {
 
                           color: Colors.black,
                           onPressed: () {
+                            _showAddTaskModal(context);
                             // Navigate to add task page
                           },
                         ),
@@ -112,6 +234,7 @@ class _HomepageState extends State<Homepage> {
                     flex: 3,
                     child: Container(
                       height: 45,
+
                       padding: const EdgeInsets.symmetric(horizontal: 0.1),
                       decoration: BoxDecoration(
                         color: Colors.grey,
@@ -149,12 +272,82 @@ class _HomepageState extends State<Homepage> {
                                 ),
                               ),
                             ),
+                            const Positioned(
+                              right: 10,
+                              top: 10,
+                              child: Text(
+                                'Level 1',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[400],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: _tasks.isEmpty
+                      ? const Center(
+                          child: Text('No tasks yet. Tap + to add one!'),
+                        )
+                      : ListView.builder(
+                          itemCount: _tasks.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: ListTile(
+                                title: Text(
+                                  _tasks[index],
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.edit,
+                                        color: Colors.grey,
+                                      ),
+                                      onPressed: () =>
+                                          _showEditTaskDialog(context, index),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.check_box_outline_blank,
+                                        color: Colors.green,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _tasks.removeAt(index);
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                ),
               ),
             ],
           ),
@@ -177,6 +370,31 @@ class _HomepageState extends State<Homepage> {
                     setState(() {
                       _currentIndex = 0;
                     });
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const Homepage(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset.zero;
+                              const curve = Curves.easeInOut;
+
+                              final tween = Tween(
+                                begin: begin,
+                                end: end,
+                              ).chain(CurveTween(curve: curve));
+                              final offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                        transitionDuration: const Duration(milliseconds: 300),
+                      ),
+                    );
                   },
                 ),
                 IconButton(
@@ -189,6 +407,31 @@ class _HomepageState extends State<Homepage> {
                     setState(() {
                       _currentIndex = 1;
                     });
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const CalendarPage(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset.zero;
+                              const curve = Curves.easeInOut;
+
+                              final tween = Tween(
+                                begin: begin,
+                                end: end,
+                              ).chain(CurveTween(curve: curve));
+                              final offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                        transitionDuration: const Duration(milliseconds: 300),
+                      ),
+                    );
                   },
                 ),
                 IconButton(
@@ -201,6 +444,31 @@ class _HomepageState extends State<Homepage> {
                     setState(() {
                       _currentIndex = 2;
                     });
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const Chatbot(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset.zero;
+                              const curve = Curves.easeInOut;
+
+                              final tween = Tween(
+                                begin: begin,
+                                end: end,
+                              ).chain(CurveTween(curve: curve));
+                              final offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                        transitionDuration: const Duration(milliseconds: 300),
+                      ),
+                    );
                   },
                 ),
                 IconButton(

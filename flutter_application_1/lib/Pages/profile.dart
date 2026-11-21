@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart'; // Adjust if it's directly in lib/ as import 'profile.dart';
+import 'calendar.dart';
+import 'chatbot.dart';
+import 'home_page.dart';
+
 
 class Profilepage extends StatefulWidget {
   const Profilepage({super.key});
@@ -15,7 +18,7 @@ class _ProfilepageState extends State<Profilepage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-       debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       title: 'Profiles Page',
       home: Scaffold(
         body: Padding(
@@ -28,28 +31,7 @@ class _ProfilepageState extends State<Profilepage> {
                   Expanded(
                     child: Column(
                       children: [
-                        Expanded(
-                          child: Container(
-                            width: 600,
-                            height: 100,
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              //box decoration for the container
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Align(
-                              alignment: Alignment.center,
-                              child: Text(
-                                'Good evening, User Name!',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                      
                         Container(
                           height: 50,
                           decoration: BoxDecoration(
@@ -168,7 +150,6 @@ class _ProfilepageState extends State<Profilepage> {
                     setState(() {
                       _currentIndex = 0;
                     });
-
                     Navigator.push(
                       context,
                       PageRouteBuilder(
@@ -206,6 +187,31 @@ class _ProfilepageState extends State<Profilepage> {
                     setState(() {
                       _currentIndex = 1;
                     });
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const CalendarPage(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset.zero;
+                              const curve = Curves.easeInOut;
+
+                              final tween = Tween(
+                                begin: begin,
+                                end: end,
+                              ).chain(CurveTween(curve: curve));
+                              final offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                        transitionDuration: const Duration(milliseconds: 300),
+                      ),
+                    );
                   },
                 ),
                 IconButton(
@@ -218,6 +224,31 @@ class _ProfilepageState extends State<Profilepage> {
                     setState(() {
                       _currentIndex = 2;
                     });
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const Chatbot(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset.zero;
+                              const curve = Curves.easeInOut;
+
+                              final tween = Tween(
+                                begin: begin,
+                                end: end,
+                              ).chain(CurveTween(curve: curve));
+                              final offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                        transitionDuration: const Duration(milliseconds: 300),
+                      ),
+                    );
                   },
                 ),
                 IconButton(
