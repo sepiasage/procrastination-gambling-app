@@ -160,6 +160,13 @@ class _ItemMenuState extends State<ItemMenu> {
     _controller.text = oldTask;
   }
 
+  bool validate(String? text){
+    if(text == null || text.isEmpty){
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return IconButton(
@@ -176,6 +183,12 @@ class _ItemMenuState extends State<ItemMenu> {
                 decoration: const InputDecoration(
                   helperText: 'Enter task',
                 ),
+                validator: (value) {
+                  if(value == null || value.isEmpty){
+                    return 'Task cannot be blank';
+                  }
+                  return null;
+                },
               ),
             ],
           ),
@@ -189,8 +202,11 @@ class _ItemMenuState extends State<ItemMenu> {
             ),
             TextButton(
               onPressed: () => {
-                widget.onSubmit(widget.index, _controller.text, true),
-                Navigator.pop(context, 'Confirm'),
+                if(validate(_controller.text)){
+                  widget.onSubmit(widget.index, _controller.text, true),
+                  Navigator.pop(context, 'Confirm'),
+                }else{
+                }
               },
               child: const Text('Confirm')
             ),
