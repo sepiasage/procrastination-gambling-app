@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'calendar.dart';
+import 'package:flutter_application_1/Pages/chatbot.dart';
+import 'home_page.dart';
 
 class Profilepage extends StatefulWidget {
   const Profilepage({super.key});
@@ -8,10 +11,11 @@ class Profilepage extends StatefulWidget {
 }
 
 class _ProfilepageState extends State<Profilepage> {
+  int _currentIndex = 3;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-       debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       title: 'Profiles Page',
       home: Scaffold(
         body: Padding(
@@ -38,6 +42,166 @@ class _ProfilepageState extends State<Profilepage> {
               ),
               Row(children: [Text("67%"), Text("Level 5")]),
             ],
+          ),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          child: Container(
+            height: 50,
+            color: Colors.grey,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.assignment_turned_in,
+                    color: _currentIndex == 0 ? Colors.white : Colors.black,
+                  ),
+                  onPressed: () {
+                    // Navigate to home page
+                    setState(() {
+                      _currentIndex = 0;
+                    });
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const Homepage(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset.zero;
+                              const curve = Curves.easeInOut;
+
+                              final tween = Tween(
+                                begin: begin,
+                                end: end,
+                              ).chain(CurveTween(curve: curve));
+                              final offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                        transitionDuration: const Duration(milliseconds: 300),
+                      ),
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.calendar_month,
+                    color: _currentIndex == 1 ? Colors.white : Colors.black,
+                  ),
+                  onPressed: () {
+                    // Navigate to calendar page
+                    setState(() {
+                      _currentIndex = 1;
+                    });
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const CalendarPage(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset.zero;
+                              const curve = Curves.easeInOut;
+
+                              final tween = Tween(
+                                begin: begin,
+                                end: end,
+                              ).chain(CurveTween(curve: curve));
+                              final offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                        transitionDuration: const Duration(milliseconds: 300),
+                      ),
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.support_agent,
+                    color: _currentIndex == 2 ? Colors.white : Colors.black,
+                  ),
+                  onPressed: () {
+                    // Navigate to chatbot page
+                    setState(() {
+                      _currentIndex = 2;
+                    });
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const Chatbot(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset.zero;
+                              const curve = Curves.easeInOut;
+
+                              final tween = Tween(
+                                begin: begin,
+                                end: end,
+                              ).chain(CurveTween(curve: curve));
+                              final offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                        transitionDuration: const Duration(milliseconds: 300),
+                      ),
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.person,
+                    color: _currentIndex == 3 ? Colors.white : Colors.black,
+                  ),
+                  onPressed: () {
+                    // Navigate to settings page
+                    setState(() {
+                      _currentIndex = 3;
+                    });
+                    // Navigate to the ProfilePage
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const Profilepage(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset.zero;
+                              const curve = Curves.easeInOut;
+
+                              final tween = Tween(
+                                begin: begin,
+                                end: end,
+                              ).chain(CurveTween(curve: curve));
+                              final offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                        transitionDuration: const Duration(milliseconds: 300),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
